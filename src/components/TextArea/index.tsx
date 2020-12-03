@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import Prism from 'prismjs';
 import 'prismjs/components/prism-markdown.js';
 import { IProps } from '../../utils';
 import hotkeys, { IHotkeyOptions } from './hotkeys';
@@ -37,37 +36,21 @@ export default class TextArea extends Component<ITextAreaProps, ITextAreaState> 
     const { onChange } = this.props;
     this.setState({ value: e.target.value }, () => {
       onChange && onChange(this.state.value);
-      this.highlight();
     });
-  }
-  public async componentDidMount() {
-    this.highlight();
   }
   public UNSAFE_componentWillReceiveProps(nextProps: ITextAreaProps) {
     if (nextProps.value !== this.props.value) {
-      this.setState({ value: nextProps.value }, () => {
-        this.highlight();
-      });
+      this.setState({ value: nextProps.value });
     }
   }
   public shouldComponentUpdate(nextProps: ITextAreaProps, nextState: ITextAreaState) {
     return nextProps.value !== this.props.value || nextState.value !== this.state.value;
-  }
-  public async highlight() {
-    const { value } = this.state;
-    const pre = this.preElm.current;
-    const html = Prism.highlight(value as string, Prism.languages.markdown, 'markdown');
-    pre!.innerHTML = `${html}<br />`;
   }
   render() {
     const { prefixCls, className, onChange, onScroll, tabSize, style, ...otherProps } = this.props;
     return (
       <div ref={this.warp} className={classnames(`${prefixCls}-aree`, className)} onScroll={onScroll}>
         <div className={classnames(`${prefixCls}-text`)}>
-          <pre
-            ref={this.preElm}
-            className={classnames(`${prefixCls}-text-pre`, 'wmde-markdown-color')}
-          />
           <textarea
             {...otherProps}
             ref={this.text}
